@@ -92,21 +92,21 @@ class AttributesList:  # pylint: disable=too-few-public-methods
             par_name = attributes_chain[0]
             try:
                 cur_attribute = self._attributes[par_name]
-            except KeyError:
-                raise RootDoesNotExist
+            except KeyError as key_error:
+                raise RootDoesNotExist from key_error
 
             cur_type = TYPES_SCHEME
 
             for attribute_name in attributes_chain[1:]:
                 try:
                     cur_attribute = cur_attribute[attribute_name]
-                except KeyError:
-                    raise AttributeDoesNotExist(par_name, attribute_name)
+                except KeyError as key_error:
+                    raise AttributeDoesNotExist(par_name, attribute_name) from key_error
 
                 try:
                     cur_type = cur_type[attribute_name]
-                except KeyError:
-                    raise UnknownAttribute
+                except KeyError as key_error:
+                    raise UnknownAttribute from key_error
 
                 par_name = attribute_name
 
