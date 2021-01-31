@@ -113,23 +113,28 @@ def main():
         expand_data_files(f'{PACKAGE_NAME}/{dev_name}/meta.yml')
 
         for os_name in os.listdir(path_to_dev):
-            mkdir(get_abs_path(f'{PACKAGE_NAME}/{dev_name}/{os_name}'))
-
             path_to_os = get_abs_path(f'{dev_name}/{os_name}')
-            dst_meta = get_abs_path(f'{PACKAGE_NAME}/{dev_name}/{os_name}/meta.yml')
-            if Path(path_to_os).is_symlink():
-                src_meta = get_abs_path(f'{dev_name}/meta_{os_name}.yml')
-                if not Path(src_meta).exists():
-                    src_meta = get_abs_path(f'{dev_name}/{os_name}/meta.yml')
 
-                copy(src_meta, dst_meta)
-            elif Path(path_to_os).is_dir():
-                src_meta = get_abs_path(f'{dev_name}/{os_name}/meta.yml')
-                copy(src_meta, dst_meta)
+            if not Path(path_to_os).is_file():
+                mkdir(get_abs_path(f'{PACKAGE_NAME}/{dev_name}/{os_name}'))
+
+                dst_meta = get_abs_path(f'{PACKAGE_NAME}/{dev_name}/{os_name}/meta.yml')
+                if Path(path_to_os).is_symlink():
+                    src_meta = get_abs_path(f'{dev_name}/meta_{os_name}.yml')
+                    if not Path(src_meta).exists():
+                        src_meta = get_abs_path(f'{dev_name}/{os_name}/meta.yml')
+
+                    copy(src_meta, dst_meta)
+                elif Path(path_to_os).is_dir():
+                    src_meta = get_abs_path(f'{dev_name}/{os_name}/meta.yml')
+                    copy(src_meta, dst_meta)
+
+                expand_data_files(f'{PACKAGE_NAME}/{dev_name}/{os_name}/meta.yml')
+            elif os_name.startswith('meta_'):
+                dst_meta = get_abs_path(f'{PACKAGE_NAME}/{dev_name}/{os_name}')
+                copy(path_to_os, dst_meta)
             else:
                 continue  # skip regular files on the second level too
-
-            expand_data_files(f'{PACKAGE_NAME}/{dev_name}/{os_name}/meta.yml')
 
     setup(name=PACKAGE_NAME,
           version='0.1',
