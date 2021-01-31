@@ -105,8 +105,10 @@ def main():
         if not Path(path_to_dev).is_dir():
             continue  # skip setup.py and other regular files
 
-        if dev_name in ['build', 'dist', f'{PACKAGE_NAME}.egg-info', PACKAGE_NAME]:
-            continue  # skip the dirs produced as a result of 'setup.py sdist' or 'setup.py build'
+        if dev_name in ['bin', 'build', 'dist', f'{PACKAGE_NAME}.egg-info', PACKAGE_NAME]:
+            continue
+            # skip the dirs produced as a result of 'setup.py sdist' or 'setup.py build'
+            # and bin dir with source of pieman_devices package
 
         mkdir(get_abs_path(f'{PACKAGE_NAME}/{dev_name}'))
 
